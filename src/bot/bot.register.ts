@@ -1,37 +1,12 @@
-import { Command, Ctx, InjectBot, Start, Update } from 'nestjs-telegraf';
-import { cleanUpCommand } from 'src/helpers/main';
-import { RegistrationService } from 'src/registration/registration.service';
-import { Telegraf } from 'telegraf';
+import { Command, Ctx, Update } from 'nestjs-telegraf';
+import { cleanUpCommand } from '../helpers/main';
+import { RegistrationService } from '../registration/registration.service';
 
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
 
 @Update()
-export class BotTelegraf {
-    constructor(
-        @InjectBot() private bot: Telegraf<TelegrafContext>,
-        private registrationService: RegistrationService,
-    ) {
-        bot.telegram.setMyCommands([
-            {
-                command: 'registrar',
-                description: 'Registrar no desafio formato',
-            },
-            { command: 'listar_frangos', description: 'Frangos do dia' },
-            { command: 'pontuar', description: 'Registrar exercício do dia' },
-            {
-                command: 'pontuacao_individual',
-                description: 'Listar pontuação individual',
-            },
-            {
-                command: 'pontuacao_geral',
-                description: 'Listar pontuação das equipes',
-            },
-        ]);
-    }
-    @Start()
-    async start(@Ctx() ctx: TelegrafContext) {
-        await ctx.reply('Tech Move Bot inicializado com sucesso!');
-    }
+export class BotRegister {
+    constructor(private registrationService: RegistrationService) {}
 
     @Command('registrar')
     async registration(@Ctx() ctx: TelegrafContext) {
