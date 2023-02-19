@@ -1,9 +1,9 @@
-import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { BotTelegraf } from './bot.telegraf';
+import { RegistrationModule } from 'src/registration/registration.module';
 
 @Module({
-    imports: [ConfigModule],
+    imports: [RegistrationModule],
     providers: [BotTelegraf],
 })
 export class BotModule {}
