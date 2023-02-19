@@ -1,5 +1,5 @@
 import { Command, Ctx, Update } from 'nestjs-telegraf';
-import { cleanUpCommand } from '../helpers/main';
+import { cleanUpCommand, inRange } from '../helpers/main';
 import { RegistrationService } from '../registration/registration.service';
 
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
@@ -22,11 +22,19 @@ export class BotRegister {
                 );
                 return;
             }
+            const min = parseInt(inputs[0]);
+            const max = parseInt(inputs[1]);
+            if (!inRange(min) || !inRange(max)) {
+                await ctx.reply(
+                    `@${username} você submeteu valores invalidos! Por favor tente novamente! `,
+                );
+                return;
+            }
             try {
                 this.registrationService.add({
                     username: username,
-                    min: parseInt(inputs[0]),
-                    max: parseInt(inputs[1]),
+                    min: min,
+                    max: max,
                 });
                 await ctx.reply(
                     `@${username} seu registro foi confirmado com: mínimo de ${inputs[0]} e máximo de ${inputs[1]} na semana! 🚀 `,
