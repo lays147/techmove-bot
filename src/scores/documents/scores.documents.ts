@@ -1,8 +1,7 @@
-import { ScoreDto } from '../dto/scores.dto';
+import { UserDto } from './../dto/user.dto';
 
 const MONTH = new Date().toLocaleString('default', { month: 'long' });
 
-export class ScoresDocument extends ScoreDto {
+export class ScoresCollection extends UserDto {
     static collectionName = `scores-${MONTH.toLowerCase()}`;
-    created_at: string;
 }

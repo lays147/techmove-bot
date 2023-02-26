@@ -1,9 +1,9 @@
-import { ScoresDocument } from './../scores/documents/scores.documents';
+import { ScoresCollection } from './../scores/documents/scores.documents';
 import { RegistrationDocument } from 'src/registration/documents/registration.document';
 
 export const FirestoreDatabaseProvider = 'firestoredb';
 export const FirestoreOptionsProvider = 'firestoreOptions';
 export const FirestoreCollectionProviders: string[] = [
     RegistrationDocument.collectionName,
-    ScoresDocument.collectionName,
+    ScoresCollection.collectionName,
 ];
