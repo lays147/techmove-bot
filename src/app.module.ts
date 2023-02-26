@@ -4,6 +4,7 @@ import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
 import { BotModule } from './bot/bot.module';
 import { FirestoreModule } from './firestore/firestore.module';
 import { RegistrationModule } from './registration/registration.module';
+import { ScoresModule } from './scores/scores.module';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { RegistrationModule } from './registration/registration.module';
             inject: [ConfigService],
         }),
         RegistrationModule,
+        ScoresModule,
     ],
     providers: [],
 })

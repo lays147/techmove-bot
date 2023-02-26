@@ -9,7 +9,7 @@ const COMMANDS: { command: string; description: string }[] = [
         description: 'Registrar no desafio formato',
     },
     { command: 'listar_frangos', description: 'Frangos do dia' },
-    { command: 'pontuar', description: 'Registrar exercício do dia' },
+    { command: 'p', description: 'Registrar exercício do dia' },
     {
         command: 'pontuacao_individual',
         description: 'Listar pontuação individual',
