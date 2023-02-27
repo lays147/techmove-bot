@@ -1,17 +1,20 @@
-import { parseUsersScoresToString } from './../helpers/main';
-import { ScoreDto } from '../scores/dto/scores.dto';
-import { Ctx, On, Update, Command } from 'nestjs-telegraf';
-import { cleanUpCommand } from '../helpers/main';
-import { ScoresService } from '../scores/scores.service';
+import { Command, Ctx, On, Update } from 'nestjs-telegraf';
 
-import { TelegrafContext } from './interfaces/telegraf-context.interface';
+import { cleanUpCommand } from '../helpers/main';
+import { ScoreDto } from '../scores/dto/scores.dto';
+import { ScoresService } from '../scores/scores.service';
+import { UsersService } from './../users/users.service';
 import { PontuationInput } from './interfaces/pontuation.interface';
+import { TelegrafContext } from './interfaces/telegraf-context.interface';
 
 const COMMAND = '/p';
 
 @Update()
 export class BotScore {
-    constructor(private scoresService: ScoresService) {}
+    constructor(
+        private scoresService: ScoresService,
+        private usersService: UsersService,
+    ) {}
 
     static parseInput(inputs: string[]): PontuationInput {
         return {
@@ -68,8 +71,7 @@ export class BotScore {
     @Command('pontuacao_individual')
     async individualScores(@Ctx() ctx: TelegrafContext) {
         try {
-            const users = await this.scoresService.getAll();
-            const message = parseUsersScoresToString(users);
+            const message = await this.usersService.getAllUsersScoresAsString();
             ctx.replyWithMarkdownV2(message);
         } catch (error) {
             ctx.reply(
