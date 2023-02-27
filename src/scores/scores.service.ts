@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { TODAY } from '@app/constants';
 import { UsersService } from '@app/users/users.service';
 
 import { evaluateDaysInRowBonification } from './business_logic/main';
@@ -26,6 +27,7 @@ export class ScoresService {
                     user.extra_points,
                 );
                 user.total_points = user.days_in_row + user.extra_points;
+                user.last_day_of_training = TODAY;
                 await this.usersService.updateUser(user);
             }
         } catch (error) {
