@@ -1,12 +1,17 @@
 import { Command, Ctx, Update } from 'nestjs-telegraf';
-import { cleanUpCommand, inRange } from '../helpers/main';
-import { RegistrationService } from '../registration/registration.service';
 
+import { UserDto } from '@app/users/dto/user.dto';
+import { inRange } from '@app/users/helpers';
+import { UsersService } from '@app/users/users.service';
+
+import { cleanUpCommand } from '../helpers/main';
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
+
+UserDto;
 
 @Update()
 export class BotRegister {
-    constructor(private registrationService: RegistrationService) {}
+    constructor(private usersService: UsersService) {}
 
     @Command('registrar')
     async registration(@Ctx() ctx: TelegrafContext) {
@@ -31,13 +36,14 @@ export class BotRegister {
                 return;
             }
             try {
-                this.registrationService.add({
-                    username: username,
-                    min: min,
-                    max: max,
-                });
+                const profile = this.usersService.createNewUserProfile(
+                    username,
+                    min,
+                    max,
+                );
+                await this.usersService.add(profile);
                 await ctx.reply(
-                    `@${username} seu registro foi confirmado com: mínimo de ${inputs[0]} e máximo de ${inputs[1]} na semana! 🚀 `,
+                    `@${username} seu registro foi confirmado com: mínimo de ${profile.min} e máximo de ${profile.max} na semana! 🚀 `,
                 );
                 return;
             } catch {
