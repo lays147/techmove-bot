@@ -77,4 +77,19 @@ export class BotScore {
             );
         }
     }
+
+    @Command('/listar_frangos')
+    async listChickens(@Ctx() ctx: TelegrafContext) {
+        try {
+            const users = await this.scoresService.getChickens();
+            const message = `Frangos do dia! 🐣 \n ${users.map(
+                user => `@${user}\n`,
+            )}`;
+            ctx.reply(message);
+        } catch {
+            ctx.reply(
+                'Houve uma falha para consultar a pontuação. Será que foi a Skynet? 🤖',
+            );
+        }
+    }
 }

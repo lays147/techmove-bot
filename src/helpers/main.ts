@@ -23,3 +23,8 @@ export const parseUsersScoresToString = (users: UserDto[]): string => {
     const message: string = content.join('\n');
     return message;
 };
+
+export const TODAY = new Date()
+    .toLocaleDateString('pt-BR')
+    .split('/')
+    .join('-');

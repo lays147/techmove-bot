@@ -7,8 +7,10 @@ import {
     FailedToSavescore,
     FailedToUpdateUserScore,
     FailedToRetrieveScores,
+    FailedToRetrieveChickens,
 } from './exceptions';
 import { UserDto } from './dto/user.dto';
+import { TODAY } from '../helpers/main';
 
 @Injectable()
 export class ScoresService {
@@ -67,6 +69,28 @@ export class ScoresService {
         } catch (error) {
             this.logger.error(error);
             throw new FailedToRetrieveScores();
+        }
+    }
+
+    async getChickens(): Promise<string[]> {
+        try {
+            const users = await this.getAll();
+            const chickens: string[] = [];
+
+            for (const user of users) {
+                const docRef = this.scoresCollection
+                    .doc(user.username)
+                    .collection('events')
+                    .doc(TODAY);
+                const doc = await docRef.get();
+                if (!doc.exists) {
+                    chickens.push(user.username);
+                }
+            }
+            return chickens;
+        } catch (error) {
+            this.logger.error(error);
+            throw new FailedToRetrieveChickens();
         }
     }
 }

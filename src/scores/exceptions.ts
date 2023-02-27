@@ -17,3 +17,9 @@ export class FailedToRetrieveScores extends UnprocessableEntityException {
         super('Failed to retrieve scores from Firestore');
     }
 }
+
+export class FailedToRetrieveChickens extends UnprocessableEntityException {
+    constructor() {
+        super('Failed to retrieve chickens from Firestore');
+    }
+}
