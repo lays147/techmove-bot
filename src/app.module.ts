@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BotModule } from './bot/bot.module';
 import { FirestoreModule } from './firestore/firestore.module';
 import { ScoresModule } from './scores/scores.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { ScoresModule } from './scores/scores.module';
             inject: [ConfigService],
         }),
         ScoresModule,
+        UsersModule,
     ],
     providers: [],
 })
