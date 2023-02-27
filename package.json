@@ -1,8 +1,8 @@
 {
     "name": "techmove-bot",
     "version": "0.0.1",
-    "description": "",
-    "author": "",
+    "description": "A bot to make your company healthier with a game.",
+    "author": "laysrodriguessilva@gmail.com",
     "private": true,
     "license": "MIT",
     "scripts": {
@@ -17,7 +17,11 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+        "test:e2e": "jest --config ./test/jest-e2e.json",
+        "prepare": "husky install"
+    },
+    "lint-staged": {
+        "*.{js,ts}": "eslint"
     },
     "dependencies": {
         "@google-cloud/firestore": "^6.4.3",
@@ -34,6 +38,8 @@
         "telegraf": "^4.11.2"
     },
     "devDependencies": {
+        "@commitlint/cli": "^17.4.4",
+        "@commitlint/config-conventional": "^17.4.4",
         "@nestjs/cli": "^9.0.0",
         "@nestjs/schematics": "^9.0.0",
         "@nestjs/testing": "^9.0.0",
@@ -47,7 +53,9 @@
         "eslint": "^8.0.1",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
+        "husky": "^8.0.3",
         "jest": "29.3.1",
+        "lint-staged": "^13.1.2",
         "prettier": "^2.3.2",
         "source-map-support": "^0.5.20",
         "supertest": "^6.1.3",
