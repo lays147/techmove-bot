@@ -16,3 +16,5 @@ export const MATCH_UNTIL_SPACE = /^[\S]+/;
 export const MINIMUM_OF_EXERCISES = 1;
 
 export const MAX_OF_EXERCISES = 7;
+
+export const DAYS_FOR_PUNISHMENT = 7;

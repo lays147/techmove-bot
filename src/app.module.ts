@@ -2,8 +2,10 @@ import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { BotModule } from './bot/bot.module';
+import { CronModule } from './cron/cron.module';
 import { FirestoreModule } from './firestore/firestore.module';
 import { ScoresModule } from './scores/scores.module';
 import { TextParserModule } from './text-parser/text-parser.module';
@@ -28,9 +30,11 @@ import { UsersModule } from './users/users.module';
             }),
             inject: [ConfigService],
         }),
+        ScheduleModule.forRoot(),
         ScoresModule,
         UsersModule,
         TextParserModule,
+        CronModule,
     ],
     providers: [],
 })
