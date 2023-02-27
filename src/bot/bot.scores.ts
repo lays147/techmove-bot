@@ -3,6 +3,7 @@ import { Command, Ctx, On, Update } from 'nestjs-telegraf';
 import { cleanUpCommand } from '@app/helpers/main';
 import { ScoreDto } from '@app/scores/dto/scores.dto';
 import { ScoresService } from '@app/scores/scores.service';
+import { TextParserService } from '@app/text-parser/text-parser.service';
 import { UsersService } from '@app/users/users.service';
 
 import { UserAlreadyScoredToday } from './../users/exceptions';
@@ -16,6 +17,7 @@ export class BotScore {
     constructor(
         private scoresService: ScoresService,
         private usersService: UsersService,
+        private textParser: TextParserService,
     ) {}
 
     static parseInput(inputs: string[]): PontuationInput {
@@ -97,7 +99,8 @@ export class BotScore {
     @Command('pontuacao_individual')
     async individualScores(@Ctx() ctx: TelegrafContext) {
         try {
-            const message = await this.usersService.getAllUsersScoresAsString();
+            const users = await this.usersService.getAllUsers();
+            const message = this.textParser.parseUsersScoresToString(users);
             ctx.replyWithMarkdownV2(message);
         } catch (error) {
             ctx.reply(
@@ -110,9 +113,7 @@ export class BotScore {
     async listChickens(@Ctx() ctx: TelegrafContext) {
         try {
             const users = await this.scoresService.getChickens();
-            const message = `Frangos do dia! 🐣 \n ${users.map(
-                user => `@${user}\n`,
-            )}`;
+            const message = this.textParser.parseChickensToString(users);
             ctx.reply(message);
         } catch {
             ctx.reply(
@@ -124,9 +125,9 @@ export class BotScore {
     @Command('pontuacao_geral')
     async teamScores(@Ctx() ctx: TelegrafContext) {
         try {
-            const scores = await this.scoresService.getTeamsScores();
-            const message = `Pontuação geral 🧑‍🤝‍🧑 \n ${JSON.stringify(scores)}`;
-            ctx.reply(message);
+            const teams = await this.scoresService.getTeamsScores();
+            const message = this.textParser.parseTeamsScoresToString(teams);
+            ctx.replyWithMarkdownV2(message);
         } catch (error) {
             ctx.reply(
                 'Houve uma falha para consultar a pontuação. Será que foi a Skynet? 🤖',
