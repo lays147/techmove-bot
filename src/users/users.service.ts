@@ -2,15 +2,21 @@ import { CollectionReference } from '@google-cloud/firestore';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
+import { TODAY } from '@app/constants';
+import { ScoreDto } from '@app/scores/dto/scores.dto';
+
 import { UsersCollection } from './collections/users.collection';
 import { UserDto } from './dto/user.dto';
 import {
     FailedToRegisterUser,
     FailedToRetrieveScores,
     FailedToRetrieveUser,
+    FailedToSaveScore,
+    UserAlreadyScoredToday,
 } from './exceptions';
 import { parseUsersScoresToString } from './helpers';
 
+const SCORES_COLLECTION = 'scores';
 @Injectable()
 export class UsersService {
     private logger: Logger = new Logger(UsersService.name);
@@ -83,5 +89,26 @@ export class UsersService {
         profile.min = min;
         profile.max = max;
         return profile;
+    }
+
+    async addScore(score: ScoreDto): Promise<void> {
+        const docRef = this.usersCollection
+            .doc(score.username)
+            .collection(SCORES_COLLECTION)
+            .doc(TODAY);
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            try {
+                await docRef.set({
+                    ...score,
+                    created_at: TODAY,
+                });
+            } catch (error) {
+                this.logger.error(error);
+                throw new FailedToSaveScore();
+            }
+        } else {
+            throw new UserAlreadyScoredToday();
+        }
     }
 }

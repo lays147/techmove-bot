@@ -1,9 +1,3 @@
-export class FailedToSavescore extends Error {
-    constructor() {
-        super('Failed to save score to Firestore');
-    }
-}
-
 export class FailedToUpdateUserScore extends Error {
     constructor() {
         super('Failed to updade user score to Firestore');

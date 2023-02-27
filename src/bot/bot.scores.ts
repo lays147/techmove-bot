@@ -5,6 +5,7 @@ import { ScoreDto } from '@app/scores/dto/scores.dto';
 import { ScoresService } from '@app/scores/scores.service';
 import { UsersService } from '@app/users/users.service';
 
+import { UserAlreadyScoredToday } from './../users/exceptions';
 import { PontuationInput } from './interfaces/pontuation.interface';
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
 
@@ -78,9 +79,15 @@ export class BotScore {
                 };
                 await this.scoresService.add(data);
             } catch (error) {
-                await ctx.reply(
-                    `@${username} não foi possível salvar sua pontuação! Por favor tente novamente! 💣`,
-                );
+                if (error instanceof UserAlreadyScoredToday) {
+                    await ctx.reply(
+                        `@${username} você já pontuou hoje! Estamos de 👀!`,
+                    );
+                } else {
+                    await ctx.reply(
+                        `@${username} não foi possível salvar sua pontuação! Por favor tente novamente! 💣`,
+                    );
+                }
                 return;
             }
             await ctx.reply(`@${username} você pontuou!`);

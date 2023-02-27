@@ -12,7 +12,6 @@ import { UserDto } from './dto/user.dto';
 import {
     FailedToRetrieveChickens,
     FailedToRetrieveScores,
-    FailedToSavescore,
     FailedToUpdateUserScore,
 } from './exceptions';
 
@@ -28,19 +27,8 @@ export class ScoresService {
 
     async add(score: ScoreDto): Promise<void> {
         // First let's save the point
-        try {
-            const docRef = this.usersCollection
-                .doc(score.username)
-                .collection('events')
-                .doc(TODAY);
-            await docRef.set({
-                ...score,
-                created_at: TODAY,
-            });
-        } catch (error) {
-            this.logger.error(error);
-            throw new FailedToSavescore();
-        }
+        await this.usersService.addScore(score);
+
         // Second: Let's update username point and check if any bonification is available
         try {
             const user = await this.usersService.getUser(score.username);

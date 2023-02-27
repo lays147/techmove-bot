@@ -15,3 +15,11 @@ export class FailedToRetrieveUser extends Error {
         super('Failed to retrieve user data from Firestore');
     }
 }
+
+export class UserAlreadyScoredToday extends Error {}
+
+export class FailedToSaveScore extends Error {
+    constructor() {
+        super('Failed to save score to Firestore');
+    }
+}
