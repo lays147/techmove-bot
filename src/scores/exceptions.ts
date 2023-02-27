@@ -9,9 +9,3 @@ export class FailedToRetrieveScores extends Error {
         super('Failed to retrieve scores from Firestore');
     }
 }
-
-export class FailedToRetrieveChickens extends Error {
-    constructor() {
-        super('Failed to retrieve chickens from Firestore');
-    }
-}

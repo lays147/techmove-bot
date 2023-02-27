@@ -23,3 +23,9 @@ export class FailedToSaveScore extends Error {
         super('Failed to save score to Firestore');
     }
 }
+
+export class FailedToRetrieveChickens extends Error {
+    constructor() {
+        super('Failed to retrieve chickens from Firestore');
+    }
+}

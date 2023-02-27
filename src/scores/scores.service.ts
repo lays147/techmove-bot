@@ -1,29 +1,16 @@
-import { CollectionReference } from '@google-cloud/firestore';
+import { Injectable, Logger } from '@nestjs/common';
 
-import { Inject, Injectable, Logger } from '@nestjs/common';
-
-import { TODAY } from '@app/constants';
-import { UsersCollection } from '@app/users/collections/users.collection';
 import { UsersService } from '@app/users/users.service';
 
 import { evaluateDaysInRowBonification } from './business_logic/main';
 import { ScoreDto } from './dto/scores.dto';
-import { UserDto } from './dto/user.dto';
-import {
-    FailedToRetrieveChickens,
-    FailedToRetrieveScores,
-    FailedToUpdateUserScore,
-} from './exceptions';
+import { FailedToUpdateUserScore } from './exceptions';
 
 @Injectable()
 export class ScoresService {
     private logger: Logger = new Logger(ScoresService.name);
 
-    constructor(
-        @Inject(UsersCollection.collectionName)
-        private usersCollection: CollectionReference<UsersCollection>,
-        private usersService: UsersService,
-    ) {}
+    constructor(private usersService: UsersService) {}
 
     async add(score: ScoreDto): Promise<void> {
         // First let's save the point
@@ -44,40 +31,6 @@ export class ScoresService {
         } catch (error) {
             this.logger.error(error);
             throw new FailedToUpdateUserScore();
-        }
-    }
-
-    async getAll(): Promise<UserDto[]> {
-        try {
-            const snapshot = await this.usersCollection.get();
-            const users: UserDto[] = [];
-            snapshot.forEach(user => users.push(user.data()));
-            return users;
-        } catch (error) {
-            this.logger.error(error);
-            throw new FailedToRetrieveScores();
-        }
-    }
-
-    async getChickens(): Promise<string[]> {
-        try {
-            const users = await this.getAll();
-            const chickens: string[] = [];
-
-            for (const user of users) {
-                const docRef = this.usersCollection
-                    .doc(user.username)
-                    .collection('events')
-                    .doc(TODAY);
-                const doc = await docRef.get();
-                if (!doc.exists) {
-                    chickens.push(user.username);
-                }
-            }
-            return chickens;
-        } catch (error) {
-            this.logger.error(error);
-            throw new FailedToRetrieveChickens();
         }
     }
 

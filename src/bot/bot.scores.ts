@@ -112,7 +112,7 @@ export class BotScore {
     @Command('/listar_frangos')
     async listChickens(@Ctx() ctx: TelegrafContext) {
         try {
-            const users = await this.scoresService.getChickens();
+            const users = await this.usersService.getChickens();
             const message = this.textParser.parseChickensToString(users);
             ctx.reply(message);
         } catch {

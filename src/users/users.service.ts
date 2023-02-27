@@ -9,6 +9,7 @@ import { UsersCollection } from './collections/users.collection';
 import { UserDto } from './dto/user.dto';
 import {
     FailedToRegisterUser,
+    FailedToRetrieveChickens,
     FailedToRetrieveScores,
     FailedToRetrieveUser,
     FailedToSaveScore,
@@ -109,6 +110,28 @@ export class UsersService {
             }
         } else {
             throw new UserAlreadyScoredToday();
+        }
+    }
+
+    async getChickens(): Promise<string[]> {
+        try {
+            const users = await this.getAllUsers();
+            const chickens: string[] = [];
+
+            for (const user of users) {
+                const docRef = this.usersCollection
+                    .doc(user.username)
+                    .collection(SCORES_COLLECTION)
+                    .doc(TODAY);
+                const doc = await docRef.get();
+                if (!doc.exists) {
+                    chickens.push(user.username);
+                }
+            }
+            return chickens;
+        } catch (error) {
+            this.logger.error(error);
+            throw new FailedToRetrieveChickens();
         }
     }
 }
