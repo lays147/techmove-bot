@@ -3,9 +3,10 @@ import { CollectionReference } from '@google-cloud/firestore';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { TODAY } from '@app/constants';
+import { UsersCollection } from '@app/users/collections/users.collection';
+import { UsersService } from '@app/users/users.service';
 
 import { evaluateDaysInRowBonification } from './business_logic/main';
-import { ScoresCollection } from './documents/scores.documents';
 import { ScoreDto } from './dto/scores.dto';
 import { UserDto } from './dto/user.dto';
 import {
@@ -20,24 +21,21 @@ export class ScoresService {
     private logger: Logger = new Logger(ScoresService.name);
 
     constructor(
-        @Inject(ScoresCollection.collectionName)
-        private scoresCollection: CollectionReference<ScoresCollection>,
+        @Inject(UsersCollection.collectionName)
+        private usersCollection: CollectionReference<UsersCollection>,
+        private usersService: UsersService,
     ) {}
 
     async add(score: ScoreDto): Promise<void> {
-        const currDate = new Date()
-            .toLocaleDateString('pt-BR')
-            .split('/')
-            .join('-');
         // First let's save the point
         try {
-            const docRef = this.scoresCollection
+            const docRef = this.usersCollection
                 .doc(score.username)
                 .collection('events')
-                .doc(currDate);
+                .doc(TODAY);
             await docRef.set({
                 ...score,
-                created_at: currDate,
+                created_at: TODAY,
             });
         } catch (error) {
             this.logger.error(error);
@@ -45,9 +43,7 @@ export class ScoresService {
         }
         // Second: Let's update username point and check if any bonification is available
         try {
-            const docRef = this.scoresCollection.doc(score.username);
-            const obj = await docRef.get();
-            const user = obj.data();
+            const user = await this.usersService.getUser(score.username);
             if (user) {
                 user.days_in_row++;
                 user.extra_points = evaluateDaysInRowBonification(
@@ -55,7 +51,7 @@ export class ScoresService {
                     user.extra_points,
                 );
                 user.total_points = user.days_in_row + user.extra_points;
-                await docRef.set({ ...user });
+                await this.usersService.updateUser(user);
             }
         } catch (error) {
             this.logger.error(error);
@@ -65,7 +61,7 @@ export class ScoresService {
 
     async getAll(): Promise<UserDto[]> {
         try {
-            const snapshot = await this.scoresCollection.get();
+            const snapshot = await this.usersCollection.get();
             const users: UserDto[] = [];
             snapshot.forEach(user => users.push(user.data()));
             return users;
@@ -81,7 +77,7 @@ export class ScoresService {
             const chickens: string[] = [];
 
             for (const user of users) {
-                const docRef = this.scoresCollection
+                const docRef = this.usersCollection
                     .doc(user.username)
                     .collection('events')
                     .doc(TODAY);
@@ -95,5 +91,15 @@ export class ScoresService {
             this.logger.error(error);
             throw new FailedToRetrieveChickens();
         }
+    }
+
+    async getTeamsScores(): Promise<TeamsInterface> {
+        const users = await this.usersService.getAllUsers();
+        const teams: TeamsInterface = {};
+        users.forEach(user => {
+            const points = teams[user.team] ?? 0;
+            teams[user.team] = points + user.total_points;
+        });
+        return teams;
     }
 }

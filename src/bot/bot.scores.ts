@@ -30,12 +30,28 @@ export class BotScore {
         const username = ctx.message?.from.username ?? '';
         let inputs: string[];
         let info: PontuationInput;
+        let user;
         if (
             message &&
             username &&
             'caption' in message &&
             message.caption?.includes(COMMAND)
         ) {
+            // First let's get user info
+            try {
+                user = await this.usersService.getUser(username);
+                if (!user) {
+                    ctx.reply(`@${username}, não encontramos seu registro!`);
+                    return;
+                }
+            } catch {
+                ctx.reply(
+                    'Houve uma falha para consultar o seu registro. Será que foi a Skynet? 🤖',
+                );
+                return;
+            }
+
+            // Second let's clean up the input data
             inputs = cleanUpCommand(message.caption);
             if (inputs.length != 2) {
                 await ctx.replyWithMarkdownV2(
@@ -51,11 +67,13 @@ export class BotScore {
                     return;
                 }
             }
+
+            // Third let's create user score data and submit
             try {
                 const data: ScoreDto = {
                     activity: info.exercise,
                     minutes: info.minutes,
-                    team: '',
+                    team: user.team,
                     username: username,
                 };
                 await this.scoresService.add(data);
@@ -90,6 +108,19 @@ export class BotScore {
             )}`;
             ctx.reply(message);
         } catch {
+            ctx.reply(
+                'Houve uma falha para consultar a pontuação. Será que foi a Skynet? 🤖',
+            );
+        }
+    }
+
+    @Command('pontuacao_geral')
+    async teamScores(@Ctx() ctx: TelegrafContext) {
+        try {
+            const scores = await this.scoresService.getTeamsScores();
+            const message = `Pontuação geral 🧑‍🤝‍🧑 \n ${JSON.stringify(scores)}`;
+            ctx.reply(message);
+        } catch (error) {
             ctx.reply(
                 'Houve uma falha para consultar a pontuação. Será que foi a Skynet? 🤖',
             );
