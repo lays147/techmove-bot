@@ -1,6 +1,6 @@
-export class FailedToRetrieveScores extends Error {
+export class FailedToRetrieveUsers extends Error {
     constructor() {
-        super('Failed to retrieve scores from Firestore');
+        super('Failed to retrieve users from Firestore');
     }
 }
 

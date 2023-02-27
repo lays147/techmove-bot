@@ -10,12 +10,11 @@ import { UserDto } from './dto/user.dto';
 import {
     FailedToRegisterUser,
     FailedToRetrieveChickens,
-    FailedToRetrieveScores,
     FailedToRetrieveUser,
+    FailedToRetrieveUsers,
     FailedToSaveScore,
     UserAlreadyScoredToday,
 } from './exceptions';
-import { parseUsersScoresToString } from './helpers';
 
 const SCORES_COLLECTION = 'scores';
 @Injectable()
@@ -67,20 +66,7 @@ export class UsersService {
             return users;
         } catch (error) {
             this.logger.error(error);
-            throw new FailedToRetrieveScores();
-        }
-    }
-
-    async getAllUsersScoresAsString(): Promise<string> {
-        try {
-            const snapshot = await this.usersCollection.get();
-            const users: UserDto[] = [];
-            snapshot.forEach(user => users.push(user.data()));
-            const message = parseUsersScoresToString(users);
-            return message;
-        } catch (error) {
-            this.logger.error(error);
-            throw new FailedToRetrieveScores();
+            throw new FailedToRetrieveUsers();
         }
     }
 
