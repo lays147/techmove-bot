@@ -3,7 +3,12 @@ import { ScoresCollection } from './documents/scores.documents';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CollectionReference } from '@google-cloud/firestore';
 import { evaluateDaysInRowBonification } from './business_logic/main';
-import { FailedToSavescore, FailedToUpdateUserScore } from './exceptions';
+import {
+    FailedToSavescore,
+    FailedToUpdateUserScore,
+    FailedToRetrieveScores,
+} from './exceptions';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class ScoresService {
@@ -50,6 +55,18 @@ export class ScoresService {
         } catch (error) {
             this.logger.error(error);
             throw new FailedToUpdateUserScore();
+        }
+    }
+
+    async getAll(): Promise<UserDto[]> {
+        try {
+            const snapshot = await this.scoresCollection.get();
+            const users: UserDto[] = [];
+            snapshot.forEach(user => users.push(user.data()));
+            return users;
+        } catch (error) {
+            this.logger.error(error);
+            throw new FailedToRetrieveScores();
         }
     }
 }

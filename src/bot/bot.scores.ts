@@ -1,7 +1,8 @@
+import { parseUsersScoresToString } from './../helpers/main';
 import { ScoreDto } from '../scores/dto/scores.dto';
-import { Ctx, On, Update } from 'nestjs-telegraf';
+import { Ctx, On, Update, Command } from 'nestjs-telegraf';
 import { cleanUpCommand } from '../helpers/main';
-import { ScoresService } from 'src/scores/scores.service';
+import { ScoresService } from '../scores/scores.service';
 
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
 import { PontuationInput } from './interfaces/pontuation.interface';
@@ -61,6 +62,19 @@ export class BotScore {
                 return;
             }
             await ctx.reply(`@${username} você pontuou!`);
+        }
+    }
+
+    @Command('pontuacao_individual')
+    async individualScores(@Ctx() ctx: TelegrafContext) {
+        try {
+            const users = await this.scoresService.getAll();
+            const message = parseUsersScoresToString(users);
+            ctx.replyWithMarkdownV2(message);
+        } catch (error) {
+            ctx.reply(
+                'Houve uma falha para consultar a pontuação. Será que foi a Skynet? 🤖',
+            );
         }
     }
 }

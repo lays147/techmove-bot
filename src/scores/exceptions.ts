@@ -11,3 +11,9 @@ export class FailedToUpdateUserScore extends UnprocessableEntityException {
         super('Failed to updade user score to Firestore');
     }
 }
+
+export class FailedToRetrieveScores extends UnprocessableEntityException {
+    constructor() {
+        super('Failed to retrieve scores from Firestore');
+    }
+}
