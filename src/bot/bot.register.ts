@@ -1,10 +1,10 @@
 import { Command, Ctx, Update } from 'nestjs-telegraf';
 
+import { cleanUpCommand } from '@app/helpers/main';
 import { UserDto } from '@app/users/dto/user.dto';
 import { inRange } from '@app/users/helpers';
 import { UsersService } from '@app/users/users.service';
 
-import { cleanUpCommand } from '../helpers/main';
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
 
 UserDto;

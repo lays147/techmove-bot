@@ -1,9 +1,10 @@
 import { Command, Ctx, On, Update } from 'nestjs-telegraf';
 
-import { cleanUpCommand } from '../helpers/main';
-import { ScoreDto } from '../scores/dto/scores.dto';
-import { ScoresService } from '../scores/scores.service';
-import { UsersService } from './../users/users.service';
+import { cleanUpCommand } from '@app/helpers/main';
+import { ScoreDto } from '@app/scores/dto/scores.dto';
+import { ScoresService } from '@app/scores/scores.service';
+import { UsersService } from '@app/users/users.service';
+
 import { PontuationInput } from './interfaces/pontuation.interface';
 import { TelegrafContext } from './interfaces/telegraf-context.interface';
 

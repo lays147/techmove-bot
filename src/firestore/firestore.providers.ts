@@ -1,6 +1,5 @@
+import { ScoresCollection } from '@app/scores/documents/scores.documents';
 import { UsersCollection } from '@app/users/collections/users.collection';
-
-import { ScoresCollection } from './../scores/documents/scores.documents';
 
 export const FirestoreDatabaseProvider = 'firestoredb';
 export const FirestoreOptionsProvider = 'firestoreOptions';

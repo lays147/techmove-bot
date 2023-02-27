@@ -1,16 +1,19 @@
-import { ScoreDto } from './dto/scores.dto';
-import { ScoresCollection } from './documents/scores.documents';
-import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CollectionReference } from '@google-cloud/firestore';
+
+import { Inject, Injectable, Logger } from '@nestjs/common';
+
+import { TODAY } from '@app/constants';
+
 import { evaluateDaysInRowBonification } from './business_logic/main';
+import { ScoresCollection } from './documents/scores.documents';
+import { ScoreDto } from './dto/scores.dto';
+import { UserDto } from './dto/user.dto';
 import {
+    FailedToRetrieveChickens,
+    FailedToRetrieveScores,
     FailedToSavescore,
     FailedToUpdateUserScore,
-    FailedToRetrieveScores,
-    FailedToRetrieveChickens,
 } from './exceptions';
-import { UserDto } from './dto/user.dto';
-import { TODAY } from '../helpers/main';
 
 @Injectable()
 export class ScoresService {
