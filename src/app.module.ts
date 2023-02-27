@@ -1,9 +1,10 @@
+import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
+
 import { BotModule } from './bot/bot.module';
 import { FirestoreModule } from './firestore/firestore.module';
-import { RegistrationModule } from './registration/registration.module';
 import { ScoresModule } from './scores/scores.module';
 
 @Module({
@@ -25,7 +26,6 @@ import { ScoresModule } from './scores/scores.module';
             }),
             inject: [ConfigService],
         }),
-        RegistrationModule,
         ScoresModule,
     ],
     providers: [],
