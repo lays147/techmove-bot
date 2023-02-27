@@ -1,6 +1,6 @@
 export class UserDto {
     username: string;
-    team?: string = '';
+    team: string = 'Não definido';
     total_of_days: number = 0;
     days_in_row: number = 0;
     extra_points: number = 0;

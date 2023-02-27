@@ -4,7 +4,11 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { UsersCollection } from './collections/users.collection';
 import { UserDto } from './dto/user.dto';
-import { FailedToRegisterUser, FailedToRetrieveScores } from './exceptions';
+import {
+    FailedToRegisterUser,
+    FailedToRetrieveScores,
+    FailedToRetrieveUser,
+} from './exceptions';
 import { parseUsersScoresToString } from './helpers';
 
 @Injectable()
@@ -24,6 +28,27 @@ export class UsersService {
         } catch (error) {
             this.logger.error(error);
             throw new FailedToRegisterUser();
+        }
+    }
+
+    async getUser(username: string): Promise<UserDto | undefined> {
+        try {
+            const docRef = this.usersCollection.doc(username);
+            const document = await docRef.get();
+            const user = document.data();
+            return user;
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    async updateUser(user: UserDto) {
+        try {
+            const docRef = this.usersCollection.doc(user.username);
+            await docRef.set({ ...user });
+        } catch (error) {
+            this.logger.error(error);
+            throw new FailedToRetrieveUser();
         }
     }
 

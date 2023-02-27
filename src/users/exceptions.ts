@@ -9,3 +9,9 @@ export class FailedToRegisterUser extends Error {
         super('Failed to register user to Firestore');
     }
 }
+
+export class FailedToRetrieveUser extends Error {
+    constructor() {
+        super('Failed to retrieve user data from Firestore');
+    }
+}
