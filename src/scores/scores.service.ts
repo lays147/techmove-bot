@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { TODAY } from '@app/constants';
+import { TeamsService } from '@app/teams/teams.service';
 import { UsersService } from '@app/users/users.service';
 
 import { evaluateDaysInRowBonification } from './business_logic/main';
@@ -11,7 +12,10 @@ import { FailedToUpdateUserScore } from './exceptions';
 export class ScoresService {
     private logger: Logger = new Logger(ScoresService.name);
 
-    constructor(private usersService: UsersService) {}
+    constructor(
+        private usersService: UsersService,
+        private teamsService: TeamsService,
+    ) {}
 
     async add(score: ScoreDto): Promise<void> {
         // First let's save the point
@@ -39,9 +43,15 @@ export class ScoresService {
     async getTeamsScores(): Promise<TeamsInterface> {
         const users = await this.usersService.getAllUsers();
         const teams: TeamsInterface = {};
+        // For each user sum their points to its teams
         users.forEach(user => {
             const points = teams[user.team] ?? 0;
             teams[user.team] = points + user.total_points;
+        });
+        // Sum user points to team extra points
+        const teamsScore = await this.teamsService.getTeams();
+        teamsScore.forEach(t => {
+            teams[t.team] = teams[t.team] + t.extra_points;
         });
         return teams;
     }
