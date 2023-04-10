@@ -8,6 +8,7 @@ import { BotModule } from './bot/bot.module';
 import { CronModule } from './cron/cron.module';
 import { FirestoreModule } from './firestore/firestore.module';
 import { ScoresModule } from './scores/scores.module';
+import { TeamsModule } from './teams/teams.module';
 import { TextParserModule } from './text-parser/text-parser.module';
 import { UsersModule } from './users/users.module';
 
@@ -35,6 +36,7 @@ import { UsersModule } from './users/users.module';
         UsersModule,
         TextParserModule,
         CronModule,
+        TeamsModule,
     ],
     providers: [],
 })
