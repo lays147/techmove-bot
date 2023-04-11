@@ -85,6 +85,10 @@
         "moduleNameMapper": {
             "^@app/(.*)$": "<rootDir>/src/$1",
             "^@test/(.*)$": "<rootDir>/test/$1"
+        },
+        "fakeTimers": {
+            "enableGlobally": true,
+            "now": 1675134000000
         }
     }
 }
