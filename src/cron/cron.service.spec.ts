@@ -1,5 +1,10 @@
+// const FIXED_DATE = new Date('2023-01-31'); (timestamp 1675123200000)
+// jest.useFakeTimers({ now: FIXED_DATE });
+// ^ This does not stays here because of prettier formatting
+// Then I configured this in package.json jest fakeTimers now config
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { TeamsService } from '@app/teams/teams.service';
 import { UserDto } from '@app/users/dto/user.dto';
 import { UsersService } from '@app/users/users.service';
 
@@ -8,8 +13,7 @@ import { CronService } from './cron.service';
 describe('CronService', () => {
     let service: CronService;
     let usersService: UsersService;
-    const FIXED_DATE = new Date('2023-01-31');
-    let spyDate: jest.SpyInstance;
+    let teamsService: TeamsService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -22,14 +26,18 @@ describe('CronService', () => {
                         updateUser: jest.fn(),
                     },
                 },
+                {
+                    provide: TeamsService,
+                    useValue: {
+                        updateTeamScore: jest.fn(),
+                    },
+                },
             ],
         }).compile();
 
         service = module.get<CronService>(CronService);
         usersService = module.get<UsersService>(UsersService);
-        spyDate = jest
-            .spyOn(global, 'Date')
-            .mockImplementation(() => FIXED_DATE);
+        teamsService = module.get<TeamsService>(TeamsService);
     });
 
     afterEach(() => {
@@ -50,7 +58,6 @@ describe('CronService', () => {
         ])('should return $expected', async ({ date, expected }) => {
             const response = service.getPunishmentScore(date);
             expect(response).toBe(expected);
-            expect(spyDate).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -90,6 +97,43 @@ describe('CronService', () => {
                 .mockResolvedValueOnce([user]);
             const spyUpdate = jest.spyOn(usersService, 'updateUser');
             await service.nonActivitiyPunisher();
+            expect(spyGet).toHaveBeenCalledTimes(1);
+            expect(spyUpdate).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('test nonActivityTeamPunisher', () => {
+        it('should punish team because no one exercised in the day', async () => {
+            const users: UserDto[] = [];
+            for (let index = 0; index < 5; index++) {
+                const user = new UserDto();
+                user.username = 'testUser';
+                user.team = 'A';
+                user.last_day_of_training = '30-01-2023';
+                users.push(user);
+            }
+            const spyGet = jest
+                .spyOn(usersService, 'getAllUsers')
+                .mockResolvedValueOnce(users);
+            const spyUpdate = jest.spyOn(teamsService, 'updateTeamScore');
+            await service.nonActivityTeamPunisher();
+            expect(spyGet).toHaveBeenCalledTimes(1);
+            expect(spyUpdate).toHaveBeenCalledWith('A', -1);
+        });
+        it('should not punish team because at least one exercised in the day', async () => {
+            const users: UserDto[] = [];
+            for (let index = 0; index < 5; index++) {
+                const user = new UserDto();
+                user.username = 'testUser';
+                user.team = 'A';
+                user.last_day_of_training = '30-01-2023';
+                users.push(user);
+            }
+            const spyGet = jest
+                .spyOn(usersService, 'getAllUsers')
+                .mockResolvedValueOnce(users);
+            const spyUpdate = jest.spyOn(teamsService, 'updateTeamScore');
+            await service.nonActivityTeamPunisher();
             expect(spyGet).toHaveBeenCalledTimes(1);
             expect(spyUpdate).not.toHaveBeenCalled();
         });
