@@ -3,6 +3,7 @@ import { Command, Ctx, On, Update } from 'nestjs-telegraf';
 import { cleanUpCommand } from '@app/helpers/main';
 import { ScoreDto } from '@app/scores/dto/scores.dto';
 import { ScoresService } from '@app/scores/scores.service';
+import { TeamsService } from '@app/teams/teams.service';
 import { TextParserService } from '@app/text-parser/text-parser.service';
 import { UsersService } from '@app/users/users.service';
 
@@ -18,6 +19,7 @@ export class BotScore {
         private scoresService: ScoresService,
         private usersService: UsersService,
         private textParser: TextParserService,
+        private teamsService: TeamsService,
     ) {}
 
     static parseInput(inputs: string[]): PontuationInput {
@@ -93,6 +95,21 @@ export class BotScore {
                 return;
             }
             await ctx.reply(`@${username} você pontuou!`);
+            // Fourth let's evaluate if the team has bonus points
+            try {
+                const has_bonus = await this.teamsService.evalTeamExerciseBonus(
+                    user.team,
+                );
+                if (has_bonus) {
+                    await ctx.reply(
+                        `O time ${user.team} ganhou ${has_bonus} ponto(s) extra pois todos se exercitaram hoje! 🔥`,
+                    );
+                }
+            } catch {
+                await ctx.reply(
+                    `Não consegui avaliar se o time ${user.team} tem pontos extras. Chamem o suporte! 🤖`,
+                );
+            }
         }
     }
 
