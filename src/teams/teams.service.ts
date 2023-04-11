@@ -19,4 +19,16 @@ export class TeamsService {
         });
         return teams;
     }
+
+    async updateTeamScore(team: string, score: number): Promise<void> {
+        const docRef = this.teamsCollection.doc(team);
+        const document = await docRef.get();
+        const teamData = document.data();
+        if (teamData) {
+            teamData.extra_points += score;
+            docRef.set(teamData);
+        } else {
+            docRef.set({ team: team, extra_points: score });
+        }
+    }
 }
