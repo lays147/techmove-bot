@@ -19,6 +19,8 @@ export const MAX_OF_EXERCISES = 7;
 
 export const DAYS_FOR_PUNISHMENT = 7;
 
+export const DAYS_OF_THE_WEEK = 7;
+
 export const YESTERDAY = (() => {
     const currentDate = new Date();
     const yesterdayDate = new Date();
