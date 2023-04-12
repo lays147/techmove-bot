@@ -3,6 +3,7 @@ import { CollectionReference } from '@google-cloud/firestore';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { TODAY } from '@app/constants';
+import { stringToPtBrDate } from '@app/helpers/main';
 import { ScoreDto } from '@app/scores/dto/scores.dto';
 
 import { UsersCollection } from './collections/users.collection';
@@ -97,6 +98,22 @@ export class UsersService {
         } else {
             throw new UserAlreadyScoredToday();
         }
+    }
+
+    async retrieveLastSixDatesRecords(username: string): Promise<Date[]> {
+        const documents = await this.usersCollection
+            .doc(username)
+            .collection(SCORES_COLLECTION)
+            .orderBy('created_at', 'desc')
+            .limit(6)
+            .get();
+
+        const dates: Date[] = [];
+        documents.forEach(doc => {
+            const data = doc.data();
+            dates.push(new Date(stringToPtBrDate(data.created_at)));
+        });
+        return dates;
     }
 
     async getChickens(): Promise<string[]> {
