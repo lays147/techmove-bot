@@ -2,14 +2,16 @@
 
 This is a Telegram Bot that scores points for physical exercises.
 
-# Business Rules
+# Business Rules & TODO
 
-[x] Member get 1 points if register at least 30 minutes of exercises in the day
-[x] If all members in a team register a exercise in the day, the team wins 1 point, this goes progressively
-[x] If one member register exercises for 6 consecutives days, it wins an extra point
-[x] If a member does not register exercises for 7 consecutives days, it losses points progressively (7/14/21/28)
-[x] If none of the team members registers an exercise in the day, the team looses 1 point
-[ ]
+-   [x] Member get 1 points if register at least 30 minutes of exercises in the day
+-   [x] If all members in a team register a exercise in the day, the team wins 1 point, this goes progressively
+-   [x] If one member register exercises for 6 consecutives days, it wins an extra point
+-   [x] If a member does not register exercises for 7 consecutives days, it losses points progressively (7/14/21/28)
+-   [x] If none of the team members registers an exercise in the day, the team looses 1 point
+-   [ ] Review naming of variables and functions to keep consistency
+-   [ ] Write unit tests where is possible
+-   [ ] Discover a way to mock Firestore - hint: Discover how to mock Injected dependencies and firestore specifics
 
 # Dependencies
 
