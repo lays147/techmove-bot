@@ -1,4 +1,6 @@
+import * as fs from 'fs';
 import { TelegrafModule, TelegrafModuleOptions } from 'nestjs-telegraf';
+import * as path from 'path';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,6 +14,14 @@ import { TeamsModule } from './teams/teams.module';
 import { TextParserModule } from './text-parser/text-parser.module';
 import { UsersModule } from './users/users.module';
 
+const getFirebaseKeyPath = (configService: ConfigService) => {
+    const firebase = configService.get<string>('FIREBASE_KEY_PATH');
+    if (firebase) return firebase;
+    const creds = configService.get<string>('FIREBASE_CREDS', '');
+    const filePath = path.join(process.cwd(), 'firestore.json');
+    fs.writeFileSync(filePath, creds);
+    return filePath;
+};
 @Module({
     imports: [
         BotModule,
@@ -27,7 +37,7 @@ import { UsersModule } from './users/users.module';
         FirestoreModule.forRoot({
             imports: [ConfigModule],
             useFactory: (configService: ConfigService) => ({
-                keyFilename: configService.get<string>('FIREBASE_KEY_PATH'),
+                keyFilename: getFirebaseKeyPath(configService),
             }),
             inject: [ConfigService],
         }),
