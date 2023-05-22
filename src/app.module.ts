@@ -9,6 +9,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BotModule } from './bot/bot.module';
 import { CronModule } from './cron/cron.module';
 import { FirestoreModule } from './firestore/firestore.module';
+import { HealthModule } from './health/health.module';
 import { ScoresModule } from './scores/scores.module';
 import { TeamsModule } from './teams/teams.module';
 import { TextParserModule } from './text-parser/text-parser.module';
@@ -47,6 +48,7 @@ const getFirebaseKeyPath = (configService: ConfigService) => {
         TextParserModule,
         CronModule,
         TeamsModule,
+        HealthModule,
     ],
     providers: [],
 })
