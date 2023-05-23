@@ -2,7 +2,7 @@ import { CollectionReference } from '@google-cloud/firestore';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
-import { TODAY } from '@app/constants';
+import { FTODAY } from '@app/constants';
 import { stringToPtBrDate } from '@app/helpers/main';
 import { ScoreDto } from '@app/scores/dto/scores.dto';
 
@@ -83,13 +83,13 @@ export class UsersService {
         const docRef = this.usersCollection
             .doc(score.username)
             .collection(SCORES_COLLECTION)
-            .doc(TODAY);
+            .doc(FTODAY());
         const doc = await docRef.get();
         if (!doc.exists) {
             try {
                 await docRef.set({
                     ...score,
-                    created_at: TODAY,
+                    created_at: FTODAY(),
                 });
             } catch (error) {
                 this.logger.error(error);
@@ -125,7 +125,7 @@ export class UsersService {
                 const docRef = this.usersCollection
                     .doc(user.username)
                     .collection(SCORES_COLLECTION)
-                    .doc(TODAY);
+                    .doc(FTODAY());
                 const doc = await docRef.get();
                 if (!doc.exists) {
                     chickens.push(user.username);
