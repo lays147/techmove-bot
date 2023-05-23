@@ -29,7 +29,7 @@ export class BotRegister {
             }
             const min = parseInt(inputs[0]);
             const max = parseInt(inputs[1]);
-            if (!inRange(min) || !inRange(max)) {
+            if (!inRange(min) || !inRange(max) || min > max) {
                 await ctx.reply(
                     `@${username} você submeteu valores invalidos! Por favor tente novamente! `,
                 );
