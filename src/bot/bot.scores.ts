@@ -151,4 +151,10 @@ export class BotScore {
             );
         }
     }
+
+    @Command('p')
+    async invalid_score(@Ctx() ctx: TelegrafContext) {
+        const username = ctx.message?.from.username ?? '';
+        ctx.reply(`@${username} Para pontuar é necessário enviar uma foto! 📸`);
+    }
 }
