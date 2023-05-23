@@ -60,7 +60,7 @@ export class BotScore {
             inputs = cleanUpCommand(message.caption);
             if (inputs.length != 2) {
                 await ctx.replyWithMarkdownV2(
-                    `@${username} verifique as informações submetidas e tente novamente: \nExemplo: */p minutos,exercícios 😉`,
+                    `@${username} verifique as informações submetidas e tente novamente: \nExemplo: */p minutos,exercícios* 😉`,
                 );
                 return;
             } else {
