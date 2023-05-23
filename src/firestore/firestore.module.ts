@@ -1,9 +1,11 @@
-import { Module, DynamicModule } from '@nestjs/common';
 import { Firestore, Settings } from '@google-cloud/firestore';
+
+import { DynamicModule, Module } from '@nestjs/common';
+
 import {
+    FirestoreCollectionProviders,
     FirestoreDatabaseProvider,
     FirestoreOptionsProvider,
-    FirestoreCollectionProviders,
 } from './firestore.providers';
 
 type FirestoreModuleOptions = {
