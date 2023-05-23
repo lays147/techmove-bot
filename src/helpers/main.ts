@@ -7,3 +7,7 @@ export const cleanUpCommand = (command: string): string[] => {
 export const stringToPtBrDate = (date: string): Date => {
     return new Date(date.split('-').reverse().join('/') + ' 00:00:00');
 };
+
+export const dateToPtBRString = (date: Date): string => {
+    return date.toLocaleDateString('pt-BR').split('/').join('-');
+};

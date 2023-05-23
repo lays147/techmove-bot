@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { DAYS_OF_THE_WEEK, TODAY } from '@app/constants';
+import { DAYS_OF_THE_WEEK, FTODAY } from '@app/constants';
 import { TeamsService } from '@app/teams/teams.service';
 import { UsersService } from '@app/users/users.service';
 
@@ -39,7 +39,7 @@ export class ScoresService {
                     user.extra_points,
                 );
                 user.total_points = user.total_of_days + user.extra_points;
-                user.last_day_of_training = TODAY;
+                user.last_day_of_training = FTODAY();
                 await this.usersService.updateUser(user);
             }
         } catch (error) {

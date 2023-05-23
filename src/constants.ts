@@ -1,13 +1,18 @@
+import { dateToPtBRString } from './helpers/main';
+
 export const CURRENT_MONTH = new Date()
     .toLocaleString('default', {
         month: 'long',
     })
     .toLowerCase();
 
-export const TODAY = new Date()
-    .toLocaleDateString('pt-BR')
-    .split('/')
-    .join('-');
+export const TODAY = dateToPtBRString(new Date());
+
+export const FTODAY = () => {
+    const currentDate = new Date();
+    const utcMinus3Date = new Date(currentDate.getTime() - 3 * 60 * 60 * 1000);
+    return dateToPtBRString(utcMinus3Date);
+};
 
 export const CODE_SCAPE = '```';
 
@@ -23,9 +28,10 @@ export const DAYS_OF_THE_WEEK = 7;
 
 export const YESTERDAY = (() => {
     const currentDate = new Date();
+    const utcMinus3Date = new Date(currentDate.getTime() - 3 * 60 * 60 * 1000);
     const yesterdayDate = new Date();
-    yesterdayDate.setDate(currentDate.getDate() - 1);
-    return yesterdayDate.toLocaleDateString('pt-BR').split('/').join('-');
+    yesterdayDate.setDate(utcMinus3Date.getDate() - 1);
+    return dateToPtBRString(yesterdayDate);
 })();
 
 export const NO_TEAM_EXERCISE_IN_DAY_PUNISHMENT = -1;

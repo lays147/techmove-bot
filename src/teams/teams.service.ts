@@ -2,7 +2,7 @@ import { CollectionReference } from '@google-cloud/firestore';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
-import { TODAY } from '@app/constants';
+import { FTODAY } from '@app/constants';
 import { UsersCollection } from '@app/users/collections/users.collection';
 import { UserDto } from '@app/users/dto/user.dto';
 
@@ -79,7 +79,7 @@ export class TeamsService {
             const teamMembers = await this.retrieveTeamMembers(team);
 
             const todayBonus = teamMembers.reduce((acc, member) => {
-                return acc && member.last_day_of_training == TODAY;
+                return acc && member.last_day_of_training == FTODAY();
             }, true);
 
             if (currTeam && todayBonus) {
