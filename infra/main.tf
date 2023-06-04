@@ -23,8 +23,9 @@ resource "aws_ecr_repository" "this" {
 }
 
 module "runner" {
-  source  = "terraform-aws-modules/app-runner/aws"
-  version = "v1.2.0"
+  source         = "terraform-aws-modules/app-runner/aws"
+  version        = "v1.2.0"
+  create_service = false
 
   service_name = local.project
   instance_configuration = {
